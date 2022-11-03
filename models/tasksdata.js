@@ -9,6 +9,10 @@ const taskSchema = new mongoose.Schema({
     type:Number,
     default:100
   },
+  wallet:{
+    type: String,
+    required: true,
+  },
   tasks:[{
     id:String,
     task:String,
