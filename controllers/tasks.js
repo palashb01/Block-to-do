@@ -1,8 +1,21 @@
 const tasks_array = require("../models/tasksdata");
 const user = require("../models/users");
 const generateAddress = require("../utils/generateAddress");
+const initializeWeb3Connection = require("../utils/initializeWeb3Connection");
+
+let provider, contract;
+initializeWeb3Connection().then(async ({ contract: ct, web3 }) => {
+  contract = ct;
+  provider = web3;
+  // // const res = await contract.methods.createTask("Hello world").send({
+  // //   from: "0x068Cea44Af30066b1f8dE4AbAc12a749d9ddaE26"
+  // // });
+  // const res = await contract.methods.getAllTasks().call();
+  // // console.log(res);
+});
 
 exports.addtask = async (req, res) => {
+  let wallet;
   try {
     const email = req.body.email;
     const result = await tasks_array
@@ -26,14 +39,21 @@ exports.addtask = async (req, res) => {
           },
         })
         .exec();
+
+      const resp = await tasks_array
+        .find({ email: req.body.email })
+        .select({ email: 0, _id: 0, __v: 0, coins: 0, tasks: 0 });
+      wallet = resp[0]['wallet'];
+
       return res.status(201).json({
         message: "successful",
       });
     } else {
+      const addressWallet = generateAddress().toString();
       const dates = new Date().toJSON().slice(0, 10);
       const Taskadd = new tasks_array({
         email: req.body.email,
-        wallet: generateAddress().toString(),
+        wallet: addressWallet,
         tasks: [
           {
             id: req.body.id,
@@ -45,6 +65,7 @@ exports.addtask = async (req, res) => {
           },
         ],
       });
+      wallet = addressWallet;
       await Taskadd.save();
       return res.status(201).json({
         message: "task added",
@@ -54,6 +75,11 @@ exports.addtask = async (req, res) => {
     return res.status(400).json({
       message: err.message,
     });
+  } finally {
+    const res = await contract.methods.createTask(wallet, req.body.task).send({
+      from: "0x068Cea44Af30066b1f8dE4AbAc12a749d9ddaE26",
+    });
+    console.log(res);
   }
 };
 

@@ -13,18 +13,6 @@ app.use(express.urlencoded({ extended: false }));
 
 const tasks = require("./controllers/tasks");
 const userss = require("./controllers/user");
-const initializeWeb3Connection = require("./utils/initializeWeb3Connection");
-
-let provider, contract;
-initializeWeb3Connection().then(async ({ contract: ct, web3 }) => {
-  contract = ct;
-  provider = web3;
-  // // const res = await contract.methods.createTask("Hello world").send({
-  // //   from: "0x068Cea44Af30066b1f8dE4AbAc12a749d9ddaE26"
-  // // });
-  // const res = await contract.methods.getAllTasks().call();
-  // // console.log(res);
-});
 
 app.post("/addUser", userss.adduser);
 app.post("/loginuser", userss.loginuser);
