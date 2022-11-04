@@ -6,10 +6,14 @@ const userSchema = new mongoose.Schema({
     required: true,
     unqiue: true,
   },
+  coins: {
+    type: Number,
+    default: 100,
+  },
   password: {
     type: String,
     required: true,
-  }
+  },
 });
 
 userSchema.pre("save", async function (next) {
