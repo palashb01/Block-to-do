@@ -75,12 +75,12 @@ exports.addtask = async (req, res) => {
     return res.status(400).json({
       message: err.message,
     });}
-   finally {
-    const res = await contract.methods.createTask(wallet, req.body.task).send({
-      from: "0x068Cea44Af30066b1f8dE4AbAc12a749d9ddaE26",
-    });
-    console.log(res);
-  }
+//    finally {
+//     const res = await contract.methods.createTask(wallet, req.body.task).send({
+//       from: "0x068Cea44Af30066b1f8dE4AbAc12a749d9ddaE26",
+//     });
+//     console.log(res);
+//   }
 };
 
 exports.gettask = async (req, res) => {
